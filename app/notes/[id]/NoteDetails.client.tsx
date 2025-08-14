@@ -58,7 +58,7 @@ export default function NoteDetailsClient({ id }: NoteDetailsClientProps) {
         </div>
         <p className={css.content}>{note.content}</p>
         <div className={css.footer}>
-          <span className={css.tag}>{note.tag}</span>
+          <p className={css.tag}>{note.tag}</p>
           <p className={css.date}>
             Created: {new Date(note.createdAt).toLocaleDateString()}
           </p>

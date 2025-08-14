@@ -4,35 +4,52 @@ import Modal from "@/components/Modal/Modal";
 import { useRouter } from "next/navigation";
 import css from "./NotePreview.module.css";
 import { Note } from "@/types/note";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 
-export default function NotePreview({ note }: { note: Note }) {
+interface NotePreviewProps {
+  note: Note;
+  fromPage?: string;
+}
+
+export default function NotePreview({
+  note,
+  fromPage = "/notes",
+}: NotePreviewProps) {
   const router = useRouter();
   const [isMounted, setIsMounted] = useState(false);
+  const [isOpen, setIsOpen] = useState(true);
 
   useEffect(() => {
     setIsMounted(true);
     return () => setIsMounted(false);
   }, []);
 
-  const handleClose = () => {
-    router.back();
-  };
+  const handleClose = useCallback(() => {
+    setIsOpen(false);
+    setTimeout(() => {
+      router.push(fromPage, { scroll: false });
+    });
+  }, [router, fromPage]);
 
-  if (!isMounted) return null;
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [handleClose]);
+
+  if (!isMounted || !isOpen) return null;
 
   return (
     <Modal onClose={handleClose}>
-      <div className={css.item}>
-        <div className={css.header}>
-          <h2 className={css.title}>{note.title}</h2>
-        </div>
-        <div className={css.content}>{note.content}</div>
-        <div className={css.footer}>
-          <span className={css.tag}>{note.tag}</span>
-          <span className={css.date}>
-            {new Date(note.createdAt).toLocaleDateString()}
-          </span>
+      <div className={css.container}>
+        <div className={css.item}>
+          <div className={css.header}>
+            <h2>{note.title}</h2>
+          </div>
+          <p className={css.content}>{note.content}</p>
+          <p className={css.date}>{note.createdAt}</p>
         </div>
       </div>
     </Modal>
