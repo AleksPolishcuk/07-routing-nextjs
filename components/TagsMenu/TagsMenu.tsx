@@ -19,6 +19,7 @@ export function TagsMenu() {
           {categories.map((tag) => (
             <li key={tag} className={css.menuItem}>
               <Link
+                onClick={() => setIsOpen(!isOpen)}
                 href={`/notes/filter/${tag === "All" ? "All" : tag}`}
                 className={css.menuLink}
               >
