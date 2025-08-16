@@ -1,4 +1,4 @@
-import SidebarNotes from "./@sidebar/SidebarNotes";
+import SidebarNotes from "./@sidebar/default";
 import css from "./FilterLayout.module.css";
 
 export default function FilterLayout({
